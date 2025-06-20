@@ -8,11 +8,6 @@
 import Foundation
 import Combine
 
-protocol CurrencyExhangeProviderProtocol {
-    func getCurrencies() async throws -> [Currency]
-    func getRate(base: Currency, target: [Currency]) async throws -> [CurrencyRate]
-}
-
 final class FreeCurrencyProvider: CurrencyExhangeProviderProtocol {
     private let fetcher: GenericAPI
     

@@ -7,15 +7,6 @@
 
 import Foundation
 
-protocol CurrencyServiceProtocol {
-    func getAvailableCurrencies() async throws -> [Currency]
-    func getCurrencyRate(from: Currency, to: Currency) async throws -> Double
-}
-
-enum CurrencyServiceError: Error {
-    case noData
-}
-
 final class CurrencyService: CurrencyServiceProtocol {
     private let currencyProvider: CurrencyExhangeProviderProtocol
     private let storage: StorageProtocol

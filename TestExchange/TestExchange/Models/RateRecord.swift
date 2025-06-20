@@ -8,32 +8,10 @@
 import Foundation
 import CoreData
 
-enum CoreDataError: Error {
-    case noSuchEntity
-    case noSuchRelationship
-}
-
 struct RateRecord {
     let timestamp: Double
     let base: Currency
     let rates: [CurrencyRate]
-}
-
-enum FilterableKey: String {
-    case timestamp, code, name, value
-    case baseCode = "base.code"
-}
-
-enum FilterCondition: String {
-    case contains = "CONTAINS[cd]"
-    case equals = "=="
-    case equalsOrMore = ">="
-}
-
-struct Filter {
-    let key: FilterableKey
-    let value: String
-    let condition: FilterCondition
 }
 
 extension RateRecord: Persistable {

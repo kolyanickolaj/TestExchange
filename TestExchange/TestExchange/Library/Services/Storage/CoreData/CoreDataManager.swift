@@ -6,46 +6,6 @@
 //
 import CoreData
 
-protocol Persistable {
-    associatedtype DBType: NSManagedObject
-    static var entityName: String { get }
-
-    func createDB(in context: NSManagedObjectContext) -> DBType
-    static func from(_ model: DBType) throws -> Self
-}
-
-extension Persistable {
-    func createPersistanceObject(_ context: NSManagedObjectContext, entityName: String) -> DBType {
-        guard let entity = NSEntityDescription.insertNewObject(forEntityName: entityName, into: context) as? DBType else {
-            fatalError("Can't find model \(DBType.self)")
-        }
-        return entity
-    }
-}
-
-protocol Filterable {
-    func stringValue(forKey key: FilterableKey) -> String?
-}
-
-extension Filterable {
-    //Better to use per-type implementation
-    func stringValue(forKey key: FilterableKey) -> String? {
-        let mirror = Mirror(reflecting: self)
-        for child in mirror.children {
-            if child.label == key.rawValue {
-                return String(describing: child.value)
-            }
-        }
-        return nil
-    }
-}
-
-protocol StorageProtocol {
-    func fetch<T: Persistable & Filterable>(with filters: [Filter]) -> T?
-    func fetch<T: Persistable & Filterable>(with filters: [Filter]) -> [T]
-    func save(_ object: any Persistable)
-}
-
 final class CoreDataManager: StorageProtocol {
     static let shared = CoreDataManager()
 
