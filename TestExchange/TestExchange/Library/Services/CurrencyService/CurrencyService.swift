@@ -8,11 +8,11 @@
 import Foundation
 
 final class CurrencyService: CurrencyServiceProtocol {
-    private let currencyProvider: CurrencyExhangeProviderProtocol
+    private let currencyProvider: CurrencyExchangeProviderProtocol
     private let storage: StorageProtocol
     
     init(
-        currencyProvider: CurrencyExhangeProviderProtocol,
+        currencyProvider: CurrencyExchangeProviderProtocol,
         storage: StorageProtocol
     ) {
         self.currencyProvider = currencyProvider
@@ -20,7 +20,7 @@ final class CurrencyService: CurrencyServiceProtocol {
     }
     
     func getAvailableCurrencies() async throws -> [Currency] {
-        if let cachedRecord: CurrencyRecord = storage.fetch(with: []).max(by: { $0.timestamp < $1.timestamp }) {
+        if let cachedRecord: CurrencyRecord = try storage.fetch().max(by: { $0.timestamp < $1.timestamp }) {
             let recordTime = cachedRecord.timestamp
             if Date().timeIntervalSince1970 < recordTime + Constants.freshCurrenciesInterval {
                 return cachedRecord.currencies
@@ -37,15 +37,15 @@ final class CurrencyService: CurrencyServiceProtocol {
         return currencies
     }
     
-    func getCurrencyRate(from: Currency, to: Currency) async throws -> Double {
+    func getCurrencyRate(from: Currency, to: Currency) async throws -> RateResult {
         let filter = Filter(key: .baseCode, value: from.code, condition: .equals)
-        if let cachedRecord: RateRecord = storage.fetch(with: [filter]).max(by: { $0.timestamp < $1.timestamp }) {
+        if let cachedRecord: RateRecord = try storage.fetch(with: filter).max(by: { $0.timestamp < $1.timestamp }) {
             let recordTime = cachedRecord.timestamp
             
             if Date().timeIntervalSince1970 < recordTime + Constants.freshRateInterval,
                let rate = cachedRecord.rates.filter({ $0.code == to.code }).first
             {
-                return rate.value
+                return RateResult(value: rate.value, timeStamp: recordTime)
             }
         }
         
@@ -56,13 +56,14 @@ final class CurrencyService: CurrencyServiceProtocol {
             throw CurrencyServiceError.noData
         }
         
+        let recordTime: TimeInterval = Date().timeIntervalSince1970
         let record = RateRecord(
-            timestamp: Date().timeIntervalSince1970,
+            timestamp: recordTime,
             base: from,
             rates: rates
         )
         storage.save(record)
         
-        return rate.value
+        return RateResult(value: rate.value, timeStamp: recordTime)
     }
 }

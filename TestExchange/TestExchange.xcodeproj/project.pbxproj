@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		ED25CED72E07817E0047B723 /* Reachability in Frameworks */ = {isa = PBXBuildFile; productRef = ED25CED62E07817E0047B723 /* Reachability */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		ED8A1CA62E04E0A400937E72 /* TestExchange.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestExchange.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ED25CED72E07817E0047B723 /* Reachability in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +70,7 @@
 			);
 			name = TestExchange;
 			packageProductDependencies = (
+				ED25CED62E07817E0047B723 /* Reachability */,
 			);
 			productName = TestExchange;
 			productReference = ED8A1CA62E04E0A400937E72 /* TestExchange.app */;
@@ -90,10 +96,12 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
-				Base,
 			);
 			mainGroup = ED8A1C9D2E04E0A400937E72;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				ED25CED52E07817E0047B723 /* XCRemoteSwiftPackageReference "Reachability" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = ED8A1CA72E04E0A400937E72 /* Products */;
 			projectDirPath = "";
@@ -341,6 +349,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		ED25CED52E07817E0047B723 /* XCRemoteSwiftPackageReference "Reachability" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ashleymills/Reachability.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		ED25CED62E07817E0047B723 /* Reachability */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = ED25CED52E07817E0047B723 /* XCRemoteSwiftPackageReference "Reachability" */;
+			productName = Reachability;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = ED8A1C9E2E04E0A400937E72 /* Project object */;
 }

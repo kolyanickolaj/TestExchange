@@ -6,16 +6,14 @@
 //
 import CoreData
 
-final class CoreDataManager: StorageProtocol {
-    static let shared = CoreDataManager()
+final class CoreDataStorage: StorageProtocol {
+    private let container: NSPersistentContainer
 
-    let container: NSPersistentContainer
-
-    private init() {
-        container = NSPersistentContainer(name: "CurrencyModel")
+    init() {
+        container = NSPersistentContainer(name: "TestExchange")
         container.loadPersistentStores { _, error in
             if let error = error {
-                fatalError("Failed to load Core Data: \(error)")
+                fatalError("Failed to load Core Data: \(error.localizedDescription)")
             }
         }
     }
@@ -33,30 +31,46 @@ final class CoreDataManager: StorageProtocol {
         }
     }
     
-    func fetch<T: Persistable & Filterable>(with filters: [Filter] = []) -> [T] {
-        do {
-            let request = NSFetchRequest<NSFetchRequestResult>(entityName: T.entityName)
-            
-            if !filters.isEmpty {
-                var predicates: [NSPredicate] = []
-                for filter in filters {
-                    predicates.append(NSPredicate(format: "\(filter.key.rawValue) \(filter.condition.rawValue) %@", "\(filter.value)"))
-                }
-                let compound = NSCompoundPredicate(type: .and, subpredicates: predicates)
-                request.predicate = compound
+    func fetch<T: Persistable & Filterable>(with filters: [Filter], logic: FilterLogic) throws -> [T] {
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: T.entityName)
+        
+        if !filters.isEmpty {
+            var predicates: [NSPredicate] = []
+            for filter in filters {
+                predicates.append(NSPredicate(format: "\(filter.key.rawValue) \(filter.condition.rawValue) %@", "\(filter.value)"))
             }
-            
-            let fetchedObjects = try context.fetch(request)
-            return fetchedObjects
-                .compactMap { $0 as? T.DBType }
-                .compactMap { try? T.from($0) }
-        } catch {
-            print(error)
-            return []
+            let compound = NSCompoundPredicate(type: logic.type, subpredicates: predicates)
+            request.predicate = compound
         }
+        
+        return try fetch(with: request)
     }
 
-    func fetch<T: Persistable & Filterable>(with filters: [Filter] = []) -> T? {
-        fetch(with: filters).first
+    func fetch<T: Persistable & Filterable>(with filters: [Filter], logic: FilterLogic) throws -> T? {
+        try fetch(with: filters, logic: logic).first
+    }
+    
+    func fetch<T: Persistable & Filterable>() throws -> [T] {
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: T.entityName)
+        return try fetch(with: request)
+    }
+    
+    func fetch<T: Persistable & Filterable>() throws -> T? {
+        try fetch().first
+    }
+    
+    func fetch<T: Persistable & Filterable>(with filter: Filter) throws -> [T] {
+        try fetch(with: [filter], logic: .and)
+    }
+    
+    func fetch<T: Persistable & Filterable>(with filter: Filter) throws -> T? {
+        try fetch(with: filter).first
+    }
+    
+    private func fetch<T: Persistable & Filterable>(with request: NSFetchRequest<NSFetchRequestResult>) throws -> [T] {
+        let fetchedObjects = try context.fetch(request)
+        return fetchedObjects
+            .compactMap { $0 as? T.DBType }
+            .compactMap { try? T.from($0) }
     }
 }

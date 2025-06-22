@@ -1,0 +1,20 @@
+/* 
+  Localizable.strings
+  TestExchange
+
+  Created by Nikolai Lipski on 21.06.25.
+  
+*/
+
+"home.amount" = "Amount:";
+"home.from" = "From:";
+"home.to" = "To:";
+"home.calculate" = "Calculate";
+"home.error.someError" = "Something went wrong";
+"home.error.noInternet" = "No internet connection. Results may be outdated";
+"home.error.incorrectInput" = "Please fill in all fields correctly.";
+"home.result.date" = "Last updated";
+
+"history.title" = "History";
+"history.error.fetchFailed" = "Failed to fetch data";
+"history.error.noData" = "No data found";

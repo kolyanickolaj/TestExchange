@@ -23,3 +23,14 @@ extension Filterable {
         return nil
     }
 }
+
+enum FilterLogic {
+    case and, or
+    
+    var type: NSCompoundPredicate.LogicalType {
+        switch self {
+        case .and: return .and
+        case .or: return .or
+        }
+    }
+}

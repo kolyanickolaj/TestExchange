@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-struct Currency: Codable {
+struct Currency: Codable, Hashable, Equatable {
     let name: String
     let code: String
 }
@@ -39,4 +39,8 @@ extension Currency: Filterable {
         default: return nil
         }
     }
+}
+
+extension Currency {
+    static let mock: Currency = .init(name: "Mock", code: "Mock")
 }

@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-final class FreeCurrencyProvider: CurrencyExhangeProviderProtocol {
+final class FreeCurrencyProvider: CurrencyExchangeProviderProtocol {
     private let fetcher: GenericAPI
     
     init(fetcher: GenericAPI = Fetcher()) {

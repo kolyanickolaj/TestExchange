@@ -15,6 +15,8 @@ enum Constants {
     }
     
     static let defaultCurrencies: [String] = ["USD", "EUR", "RUB", "GBP", "CHF", "CNY"]
+    static let defaultFromCurrency: String = "USD"
+    static let defaultToCurrency: String = "EUR"
     static let freshCurrenciesInterval: TimeInterval = 60 * 60 * 24
-    static let freshRateInterval: TimeInterval = 60
+    static let freshRateInterval: TimeInterval = 60 * 5
 }

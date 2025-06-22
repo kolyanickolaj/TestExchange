@@ -6,8 +6,9 @@
 //
 
 enum FilterableKey: String {
-    case timestamp, code, name, value
+    case timestamp, code, name, value, rate
     case baseCode = "base.code"
+    case targetCode = "target.code"
 }
 
 enum FilterCondition: String {

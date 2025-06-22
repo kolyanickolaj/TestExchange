@@ -24,6 +24,8 @@ extension RateRecord: Persistable {
             let dbRate = rate.createDB(in: context)
             dbRate.record = record
         }
+        let dbCurrency = base.createDB(in: context)
+        dbCurrency.rate = record
         return record
     }
     

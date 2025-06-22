@@ -4,8 +4,10 @@
         <attribute name="code" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="name" attributeType="String"/>
+        <relationship name="baseHistoryItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DBHistoryItem" inverseName="base" inverseEntity="DBHistoryItem"/>
         <relationship name="rate" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DBRateRecord" inverseName="base" inverseEntity="DBRateRecord"/>
         <relationship name="record" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DBCurrencyRecord" inverseName="currencies" inverseEntity="DBCurrencyRecord"/>
+        <relationship name="targetHistoryItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DBHistoryItem" inverseName="target" inverseEntity="DBHistoryItem"/>
     </entity>
     <entity name="DBCurrencyRate" representedClassName="DBCurrencyRate" syncable="YES" codeGenerationType="class">
         <attribute name="code" attributeType="String"/>
@@ -15,6 +17,13 @@
     <entity name="DBCurrencyRecord" representedClassName="DBCurrencyRecord" syncable="YES" codeGenerationType="class">
         <attribute name="timestamp" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <relationship name="currencies" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DBCurrency" inverseName="record" inverseEntity="DBCurrency"/>
+    </entity>
+    <entity name="DBHistoryItem" representedClassName="DBHistoryItem" syncable="YES" codeGenerationType="class">
+        <attribute name="rate" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="timestamp" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="value" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="base" maxCount="1" deletionRule="Nullify" destinationEntity="DBCurrency" inverseName="baseHistoryItem" inverseEntity="DBCurrency"/>
+        <relationship name="target" maxCount="1" deletionRule="Nullify" destinationEntity="DBCurrency" inverseName="targetHistoryItem" inverseEntity="DBCurrency"/>
     </entity>
     <entity name="DBRateRecord" representedClassName="DBRateRecord" syncable="YES" codeGenerationType="class">
         <attribute name="timestamp" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
