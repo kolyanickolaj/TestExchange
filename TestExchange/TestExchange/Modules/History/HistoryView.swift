@@ -22,6 +22,7 @@ struct HistoryView: View {
             .navigationBarItems(leading: closeButton)
             .navigationBarTitle("history.title".localized)
             .navigationBarTitleDisplayMode(.inline)
+            .searchable(text: $viewModel.searchText)
         }
         .onAppear {
             viewModel.onAppear()

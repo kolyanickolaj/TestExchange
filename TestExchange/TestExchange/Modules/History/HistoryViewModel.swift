@@ -26,6 +26,7 @@ final class HistoryViewModel: ObservableObject {
     
     func onAppear() {
         fetchInitialData()
+        bind()
     }
     
     func backButtonTapped() {
