@@ -12,10 +12,17 @@ struct HistoryView: View {
     
     var body: some View {
         NavigationView {
-            ScrollView(.vertical) {
-                LazyVStack {
-                    ForEach(viewModel.items, id: \.self) { item in
-                        HistoryItemView(item: item)
+            VStack {
+                if let error = viewModel.error {
+                    Text(error.description)
+                        .foregroundStyle(.red)
+                }
+                
+                ScrollView(.vertical) {
+                    LazyVStack {
+                        ForEach(viewModel.items, id: \.self) { item in
+                            HistoryItemView(item: item)
+                        }
                     }
                 }
             }

@@ -11,9 +11,11 @@ import Combine
 final class HistoryViewModel: ObservableObject {
     @Published var items: [HistoryItem] = []
     @Published var searchText = ""
+    @Published var error: HistoryError?
+    
     private let storage: StorageProtocol
     private let subject: any Subject<HistoryResult, Never>
-    private var error: HistoryError?
+    
     private var bag = Set<AnyCancellable>()
     
     init(
