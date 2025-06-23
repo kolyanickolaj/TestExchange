@@ -21,7 +21,13 @@ struct SimpleCalculatedResult {
 
 final class HomeViewModel: ObservableObject {
     @Published var amount = "100"
-    @Published var fromCurrency: Currency?
+    @Published var fromCurrency: Currency? {
+        didSet {
+            if fromCurrency == toCurrency {
+                toCurrency = toCurrencies.first(where: { $0 != fromCurrency }) ?? fromCurrency
+            }
+        }
+    }
     @Published var toCurrency: Currency?
     @Published var error: HomeError? {
         didSet {
@@ -41,7 +47,7 @@ final class HomeViewModel: ObservableObject {
         allCurrencies
     }
     var toCurrencies: [Currency] {
-        allCurrencies.filter({ $0.code != fromCurrency?.code })
+        allCurrencies.filter({ $0 != fromCurrency })
     }
     
     private let currencyService: CurrencyServiceProtocol
@@ -131,9 +137,6 @@ final class HomeViewModel: ObservableObject {
         $fromCurrency
             .receive(on: RunLoop.main)
             .sink { [weak self] currency in
-                if self?.toCurrency == currency {
-                    self?.toCurrency = self?.allCurrencies.filter({ $0.code != currency?.code }).first
-                }
                 self?.setupToDefault()
             }
             .store(in: &bag)
