@@ -6,16 +6,16 @@
 //
 
 protocol CurrencyServiceProtocol {
-    func getAvailableCurrencies() async throws -> [Currency]
-    func getCurrencyRate(from: Currency, to: Currency) async throws -> RateResult
+    func getAvailableCurrencies(forceRefresh: Bool) async throws -> [Currency]
+    func getCurrencyRate(from: Currency, to: Currency, forceRefresh: Bool) async throws -> RateResult
 }
 
 final class MockCurrencyService: CurrencyServiceProtocol {
-    func getAvailableCurrencies() async throws -> [Currency] {
+    func getAvailableCurrencies(forceRefresh: Bool) async throws -> [Currency] {
         throw CurrencyServiceError.noData
     }
     
-    func getCurrencyRate(from: Currency, to: Currency) async throws -> RateResult {
+    func getCurrencyRate(from: Currency, to: Currency, forceRefresh: Bool) async throws -> RateResult {
         throw CurrencyServiceError.noData
     }
 }

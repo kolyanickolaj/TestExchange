@@ -19,10 +19,11 @@ final class CurrencyService: CurrencyServiceProtocol {
         self.storage = storage
     }
     
-    func getAvailableCurrencies() async throws -> [Currency] {
+    func getAvailableCurrencies(forceRefresh: Bool = true) async throws -> [Currency] {
         if let cachedRecord: CurrencyRecord = try storage.fetch().max(by: { $0.timestamp < $1.timestamp }) {
             let recordTime = cachedRecord.timestamp
-            if Date().timeIntervalSince1970 < recordTime + Constants.freshCurrenciesInterval {
+            let isFresh = Date().timeIntervalSince1970 < recordTime + Constants.freshCurrenciesInterval
+            if isFresh || !forceRefresh {
                 return cachedRecord.currencies
             }
         }
@@ -37,12 +38,14 @@ final class CurrencyService: CurrencyServiceProtocol {
         return currencies
     }
     
-    func getCurrencyRate(from: Currency, to: Currency) async throws -> RateResult {
+    func getCurrencyRate(from: Currency, to: Currency, forceRefresh: Bool = true) async throws -> RateResult {
         let filter = Filter(key: .baseCode, value: from.code, condition: .equals)
         if let cachedRecord: RateRecord = try storage.fetch(with: filter).max(by: { $0.timestamp < $1.timestamp }) {
             let recordTime = cachedRecord.timestamp
             
-            if Date().timeIntervalSince1970 < recordTime + Constants.freshRateInterval,
+            let isFresh = Date().timeIntervalSince1970 < recordTime + Constants.freshRateInterval
+                                                         
+            if (isFresh || !forceRefresh),
                let rate = cachedRecord.rates.filter({ $0.code == to.code }).first
             {
                 return RateResult(value: rate.value, timeStamp: recordTime)

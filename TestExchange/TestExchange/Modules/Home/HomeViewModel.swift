@@ -41,6 +41,7 @@ final class HomeViewModel: ObservableObject {
     @Published var result: CalculatedResult?
     @Published var simpleResult: SimpleCalculatedResult?
     @Published var historyDependency: HistoryViewDependency?
+    @Published var isLoading = false
     
     var allCurrencies: [Currency] = []
     var fromCurrencies: [Currency] {
@@ -79,17 +80,20 @@ final class HomeViewModel: ObservableObject {
     }
     
     private func getAllCurrencies() {
+        isLoading = true
         Task { @MainActor in
             do {
-                allCurrencies = try await currencyService.getAvailableCurrencies()
+                allCurrencies = try await currencyService.getAvailableCurrencies(forceRefresh: reachabilityService.isReachable)
                 if fromCurrency == nil {
                     fromCurrency = allCurrencies.first(where: { $0.code == Constants.defaultFromCurrency }) ?? allCurrencies.first
                 }
                 if toCurrency == nil {
                     toCurrency = allCurrencies.first(where: { $0.code == Constants.defaultToCurrency }) ?? allCurrencies.filter({ $0.code != fromCurrency?.code }).first
                 }
+                isLoading = false
             } catch {
                 self.error = .someError
+                isLoading = false
             }
         }
     }
@@ -103,9 +107,11 @@ final class HomeViewModel: ObservableObject {
             return
         }
         
+        isLoading = false
+        
         Task { @MainActor in
             do {
-                let rateResult = try await currencyService.getCurrencyRate(from: fromCurrency, to: toCurrency)
+                let rateResult = try await currencyService.getCurrencyRate(from: fromCurrency, to: toCurrency, forceRefresh: reachabilityService.isReachable)
                 
                 let calcAmount = amountDouble * rateResult.value
                 let calcAmountString = calcAmount.roundedPresentable
@@ -127,8 +133,10 @@ final class HomeViewModel: ObservableObject {
                     target: toCurrency
                 )
                 self.storage.save(historyItem)
+                isLoading = false
             } catch {
                 self.error = .someError
+                isLoading = false
             }
         }
     }

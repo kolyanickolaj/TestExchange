@@ -13,29 +13,39 @@ struct HomeView: View {
     
     var body: some View {
         NavigationView {
-            VStack {
-                Spacer()
-                
-                errorView
-                    .padding(.bottom, 20)
-                
-                amountView
-                
-                fromInputView
-                
-                toInputView
-                
-                calculateButton
-                    .padding(.top, 20)
-                
-                resultView
-                
-                simpleResultView
-                
-                Spacer()
+            ScrollView(showsIndicators: false) {
+                LazyVStack {
+                    Spacer()
+                    
+                    errorView
+                        .padding(.bottom, 20)
+                    
+                    amountView
+                    
+                    fromInputView
+                    
+                    toInputView
+                    
+                    calculateButton
+                        .padding(.top, 20)
+                    
+                    resultView
+                    
+                    simpleResultView
+                    
+                    Spacer()
+                }
+            }
+            .onTapGesture {
+                UIApplication.shared.endEditing()
             }
             .navigationBarItems(trailing: historyButton)
             .padding(.horizontal)
+        }
+        .overlay {
+            if viewModel.isLoading {
+                LoadingView()
+            }
         }
         .onAppear {
             viewModel.onAppear()
@@ -57,6 +67,7 @@ struct HomeView: View {
         Text(viewModel.error?.description ?? "")
             .foregroundStyle(Color.red)
             .opacity(viewModel.error == nil ? 0 : 1)
+            .multilineTextAlignment(.center)
             .padding()
     }
     
